@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link href="http://vjs.zencdn.net/5.0.2/video-js.css" rel="stylesheet">
+  <script src="http://vjs.zencdn.net/ie8/1.1.0/videojs-ie8.min.js"></script>
+  <script src="http://vjs.zencdn.net/5.0.2/video.js"></script>
+</head>
+
+<body>
+  <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="auto" height="264" poster="http://vjs.zencdn.net/v/oceans.png"
+    data-setup="{}">
+    <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+    <source src="http://vjs.zencdn.net/v/oceans.webm" type="video/webm">
+    <source src="http://vjs.zencdn.net/v/oceans.ogv" type="video/ogg">
+    <track kind="captions" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
+    <!-- Tracks need an ending tag thanks to IE9 -->
+    <track kind="subtitles" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
+    <!-- Tracks need an ending tag thanks to IE9 -->
+    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that
+      <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+    </p>
+  </video>
+  <script>
+    var player = videojs('video', { fluid: true }, function () {
+      console.log('Good to go!');
+      this.play(); // if you don't trust autoplay for some reason  
+    })
+    player.on('play', function () {
+      console.log('开始/恢复播放');
+      console.log('>>>>>>>>>>>>')
+    });
+    player.on('pause', function () {
+      console.log('暂停播放');
+    });
+    player.on('ended', function () {
+      console.log('结束播放');
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>延时加载和预加载</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+        #text{
+            width:80%;
+            height:1100px;
+            margin:0 auto;
+            background:rgb(71, 168, 185);
+            text-align: center;
+        }
+        /*延迟加载css  */
+
+        #photo {
+            width: 900px;
+            background-color: black;
+            padding: 10px 0;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        #photo dl {
+            float: left;
+            width: 225px;
+            height: 275px;
+            margin: 5px 0 15px 0;
+        }
+
+        #photo dl dt {
+            width: 200px;
+            height: 250px;
+            margin: 0 auto;
+        }
+
+        #photo dl dt img {
+            display: block;
+            cursor: pointer;
+            opacity: 0;
+        }
+
+        #photo dl dd {
+            text-align: center;
+            height: 25px;
+            line-height: 25px;
+            color: white;
+        }
+
+        /*遮罩层  */
+
+        #screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0;
+            z-index: 500;
+            display: none
+        }
+
+        /*弹出层  */
+
+        #bigPhoto {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 620px;
+            height: 510px;
+            border: 1px solid #ccc;
+            background-color: green;
+            display: none;
+            z-index: 1000;
+        }
+
+        #bigPhoto h2 {
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background-image: url('imgs/login_header.png');
+            border-bottom: 1px solid #ccc;
+            font-size: 14px;
+            /*字体间距  */
+            letter-spacing: 2px;
+        }
+
+        #bigPhoto h2 img {
+            float: right;
+            position: absolute;
+            top: 13px;
+            right: 8px;
+            cursor: pointer;
+        }
+
+        #bigPhoto .big {
+            height: 460px;
+            padding-top: 10px;
+            background-color: #333;
+        }
+
+        #bigPhoto .big img {
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            top: 190px;
+            opacity: 0;
+        }
+
+        #bigPhoto .big strong {
+            display: block;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            line-height: 100px;
+            font-size: 40px;
+            color: white;
+            background-color: black;
+            opacity: 0.4;
+            position: absolute;
+        }
+
+        #bigPhoto .big .sl {
+            left: 20px;
+            top: 205px;
+        }
+
+        #bigPhoto .big .sr {
+            right: 20px;
+            top: 205px;
+        }
+
+        #bigPhoto .big span {
+            display: block;
+            position: absolute;
+            top: 50px;
+            background-color: red;
+            cursor: pointer;
+            width: 300px;
+            height: 450px;
+            opacity: 0;
+        }
+
+        #bigPhoto .big .left {
+            left: 10px;
+        }
+
+        #bigPhoto .big .right {
+            right: 10px;
+        }
+
+        #bigPhoto .big em {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: white;
+        }
+    </style>
+    </head>
+
+    <body>
+        <div id="text">
+            <p>这里是给个容器用于下面懒加载用的,当点击图片的时候,会有个弹窗框,显示的图片做轮播图的效果</p>
+        </div>
+
+        <div id="photo">
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p1.jpg" bigSrc="imgs/p1big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p2.jpg" bigSrc="imgs/p2big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p3.jpg" bigSrc="imgs/p3big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p4.jpg" bigSrc="imgs/p4big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p5.jpg" bigSrc="imgs/p5big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p6.jpg" bigSrc="imgs/p6big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p7.jpg" bigSrc="imgs/p7big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p8.jpg" bigSrc="imgs/p8big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p9.jpg" bigSrc="imgs/p9big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p10.jpg" bigSrc="imgs/p10big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p11.jpg" bigSrc="imgs/p11big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+            <dl>
+                <dt>
+                    <img src="imgs/wait_load.jpg" alt="" xsrc="imgs/p12.jpg" bigSrc="imgs/p12big.jpg" class="wait_load">
+                </dt>
+                <dd>延迟加载和预加载</dd>
+            </dl>
+        </div>
+
+        <div style="clear:both;"></div>
+        <!--遮罩层  -->
+        <div id="screen"></div>
+        <!--弹出层  -->
+        <div id="bigPhoto">
+            <h2>
+                <img src="./imgs/close.png" alt="" class="close">预加载图片</h2>
+            <div class="big">
+                <img src="./imgs/loading.gif" alt="">
+                <strong class="sl">&lt;</strong>
+                <strong class="sr">&gt;</strong>
+                <span class="left"></span>
+                <span class="right"></span>
+                <em class="index">1/12</em>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // 延迟加载图片
+                // 当图片满足某些条件时,设置图片src,让图片进行加载
+                function delayImageLoad() {
+                    setTimeout(function () {
+                        // 遍历所有图片
+                        $('.wait_load').each(function (index) {
+                            if ($(window).height() + $(document).scrollTop() >= $(this).offset().top) {
+                                // 如果图片距离文档顶部的距离,小于窗口高度加上文档滑动上去的距离,则开始加载图片
+                                // 设置图片的src属性,加载图片
+                                $(this).attr('src', $(this).attr('xsrc')).animate({
+                                    opacity: 1
+                                }, 5000)
+                            }
+                        })
+                    }, 500);
+                }
+                delayImageLoad()
+
+                // 当窗口大小改变或者文档滑动式,调用延迟加载方法进行判断
+                $(window).on('resize', delayImageLoad)
+                $(document).on('scroll', delayImageLoad)
+
+                // 遮罩宽高为整个文档的宽高
+                function getScreenWH() {
+                    var width = $(document).width()
+                    var height = $(document).height()
+                    $('#screen').width(width).height(height)
+                }
+
+                // 弹出层永远在中心
+                function centerBigPhoto() {
+                    var top = ($(window).height() - $('#bigPhoto').height()) / 2 + $(document).scrollTop()
+                    var left = ($(window).width() - $('#bigPhoto').width()) / 2 + $(document).scrollLeft()
+                    $('#bigPhoto').css({
+                        top: top,
+                        left: left
+                    })
+                }
+
+                // 窗口大小改变,页面滑动都需要让弹出层居中和遮罩层全屏
+                $(window).on('resize', getScreenWH)
+                $(document).on('scroll', getScreenWH)
+                $(window).on('resize', centerBigPhoto)
+                $(document).on('scroll', centerBigPhoto)
+
+                // 点击图片的时候
+                $('.wait_load').click(function () {
+                    getScreenWH()
+                    centerBigPhoto()
+                    // 首先弹出遮罩层
+                    $('#screen').css('display', 'block').animate({
+                        opacity: 0.5
+                    }, 500)
+                    // 设置大图容器为可见
+                    $('#bigPhoto').css('display', 'block')
+                    // 禁止页面滑动
+                    document.body.style.overflow = 'hidden'
+
+                    // 预加载
+                    // 创建一个临时图片,给与加载
+                    var temp_img = new Image()
+                    temp_img.src = $(this).attr('bigSrc')
+                    // 图片加载完毕
+                    $(temp_img).on('load', function () {
+                        // 当临时图片加载完成,然后把加载好的图片给弹出层需要显示的img
+                        $('#bigPhoto .big img').attr('src', temp_img.src).animate({
+                            opacity: 1
+                        }).css({
+                            width: 600,
+                            height: 450,
+                            top: 0
+                        })
+                    })
+                    // 找到当前点击图片所在的dl
+                    var dl = $(this).parent().parent()
+                    preciousAndNextLoadImage(dl)
+                })
+
+                // 点击关闭按钮
+                $('.close').click(function () {
+                    // 隐藏遮罩层
+                    $('#screen').animate({
+                        opacity: 0
+                    }, 500, function () {
+                        $(this).css('display', 'none')
+                    })
+                    $('#bigPhoto').css('display', 'none')
+                    // 滑动条滚动
+                    document.body.style.overflow = 'auto'
+                    // 把当前弹出层中显示图片的img设置为GIF动图
+                    $('#bigPhoto .big img').attr('src', 'imgs/loading.gif').css({
+                        top: 190,
+                        width: 32,
+                        height: 32
+                    })
+                })
+
+                // 显示作业两侧的strong
+                $('#bigPhoto .big .left').hover(function () {
+                    // 进入到span表示的左侧区域,则显示strong表示的按钮
+                    $('#bigPhoto .big .sl').stop().animate({
+                        opacity: 0.6
+                    }, 'fast')
+                }, function () {
+                    $('#bigPhoto .big .sl').stop().animate({
+                        opacity: 0
+                    }, 'fast')
+                })
+                $('#bigPhoto .big .right').hover(function () {
+                    $('#bigPhoto .big .sr').stop().animate({
+                        opacity: 0.6
+                    }, 'fast')
+                }, function () {
+                    $('#bigPhoto .big .sr').stop().animate({
+                        opacity: 0
+                    }, 'fast')
+                })
+
+                // 封装的上一张和下一张图片预加载的方法
+                // para:dl 指的一个jq对象,这个jq中包含一个dl
+                function preciousAndNextLoadImage(dl) {
+                    // 前一张图片的索引
+                    var prev = dl.prev().index()
+                    if (prev == -1) {
+                        // 如果返回-1 说明dl是第一个dl,prev应该是dl的leng减1
+                        prev = $('#photo dl').length - 1
+                    }
+                    // 后一张图片的索引
+                    var next = dl.next().index()
+                    if (prev == -1) {
+                        next = 0;
+                    }
+
+                    // 创建下一张和上一张图片
+                    var prev_img = new Image()
+                    var next_img = new Image()
+                    // 设置图片的src
+                    // $('.wait_load')这个中找到索引的图片
+                    prev_img.src = $('.wait_load').eq(prev).attr('bigSrc')
+                    next_img.src = $('.wait_load').eq(next).attr('bigSrc')
+
+                    // 当图片加载完时,左侧图片给类为.left的span,右侧图片给类为right的span
+                    $(prev_img).on('load', function () {
+                        // src这个src相对于自定义的 加上一个src
+                        $('#bigPhoto .big .left').attr('src', prev_img.src)
+                    })
+                    $(next_img).on('load', function () {
+                        // src这个src相对于自定义的 加上一个src
+                        $('#bigPhoto .big .right').attr('src', next_img.src)
+                    })
+
+                    // 给#big给#bigPhoto中的img自定义一个index属性，用于记录当前的显示的图片的索引
+                    $('#bigPhoto .big img').attr('index', dl.index())
+
+                    $('#bigPhoto .big em').html(parseInt(dl.index()) + 1 + '/' + $('dl').length)
+
+                }
+                $('#bigPhoto .big .left').click(function () {
+                    // 首先加载占位图片，就是loading.gif
+                    $('#bigPhoto .big img').attr('src', 'imgs/loading.gif').css({
+                        width: 32,
+                        height: 32,
+                        top: 190
+                    })
+                    // 创建当前需要显示的图片
+                    var current_img = new Image()
+                    // 当前.left记录了需要显示图片的src
+                    current_img.src = $(this).attr('src')
+                    $(current_img).on('load', function () {
+                        // 当图片加载完需要把图片显示在弹出层的img上
+                        $('#bigPhoto .big img').attr('src', current_img.src).animate({
+                            opacity: 1
+                        }, 'fast').css({
+                            width: 600,
+                            height: 450,
+                            top: 0
+                        })
+                    })
+                    // 获取当前图片索引
+                    // 使用$('#bigPhoto .big img').attr('index')获取到的是上一张图片设置的索引。所以需要判断是否为第一张图片，如果为第一张图片，则索引为dl的总个数减1，如果不是，就是原来的index-1
+                    var current_index = $('#bigPhoto .big img').attr('index') == 0 ? $('.wait_load').length - 1 :
+                        parseInt($('#bigPhoto .big img').attr('index')) - 1
+
+                    // 根据获取的索引得到dl
+                    var dl = $('#photo dl').eq(current_index);
+                    preciousAndNextLoadImage(dl)
+                })
+
+                $('#bigPhoto .big .right').click(function () {
+                    // 
+                    $('#bigPhoto .big img').attr('src', 'imgs/loading.gif').css({
+                        width: 32,
+                        height: 32,
+                        top: 190
+                    })
+
+                    var current_img = new Image()
+
+                    current_img.src = $(this).attr('src')
+                    console.log(current_img.src)
+                    $(current_img).on('load', function () {
+                        $('#bigPhoto .big img').attr('src', current_img.src).animate({
+                            opacity: 1
+                        }, 'fast').css({
+                            width: 600,
+                            height: 450,
+                            top: 0
+                        })
+                    })
+
+                    var current_index = $('#bigPhoto .big img').attr('index') >= $('.wait_load').length - 1 ? 0 :
+                        parseInt($('#bigPhoto .big img').attr('index')) + 1
+                    console.log(current_index);
+                    var dl = $('#photo dl').eq(current_index);
+                    preciousAndNextLoadImage(dl)
+                })
+            })
+        </script>
+    </body>
+
+</html>

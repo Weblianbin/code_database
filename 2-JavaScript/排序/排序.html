@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>排序</title>
+</head>
+
+<body>
+  <script src="./排序.js"></script>
+  <script>
+    // "parent_administrative_id": -1 为-是顶级
+    // 比如第一个(A)的administrative_id": 15, 其他的(B)"parent_administrative_id": 15
+    // 其他的(B)是第一个的孩子(A),要在A中创建一个数组,放B
+    // 结果是一级有17个对象
+    let arr = []
+    arr = test.dataObj.administrative_list
+    function transDate(lists, idstr, pidstr) {
+      const result = []
+      const temp = {}
+      for (var i = 0; i < lists.length; i++) {
+        // 将nodes数组转成对象类型
+        temp[lists[i][idstr]] = lists[i]
+      }
+      for (var j = 0; j < lists.length; j++) {
+        const tempVp = temp[lists[j][pidstr]] // 获取每一个子对象的父对象
+        // 判断父对象是否存在，如果不存在直接将对象放到第一层
+        if (tempVp) {
+          // 如 果父元素的nodes对象不存在，则创建数组
+          if (!tempVp['list']) {
+            tempVp['list'] = []
+          }
+          // 将本对象压入父对象的nodes数组
+          tempVp['list'].push(lists[j])
+        }
+        else {
+          // 将不存在父对象的对象直接放入一级目录
+          result.push(lists[j])
+        }
+      }
+      return result
+    }
+    let a = transDate(arr, 'administrative_id', 'parent_administrative_id')
+    for (let i = 0; i < a.length; i++) {
+      if (!a[i].list || a[i].list.length <= 0) {
+        a[i].list = []
+      }
+    }
+    console.log(a)
+  </script>
+</body>
+
+</html>
